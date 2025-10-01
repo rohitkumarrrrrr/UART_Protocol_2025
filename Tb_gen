@@ -1,0 +1,22 @@
+class generator;
+  mailbox gen2drv;   // mailbox for communication with driver
+
+  // Constructor
+  function new(mailbox gen2drv);
+    this.gen2drv = gen2drv;
+  endfunction
+
+  // Task to generate transactions
+  task run();
+    uart_transaction tr;
+    byte message[6] = {"S", "A", "U", "R", "A", "V"};  // test message
+
+    for (int i = 0; i < $size(message); i++) begin
+      tr = new();
+      tr.data = message[i];
+      tr.display("GEN");        // display generated data
+      gen2drv.put(tr);          // send to driver
+      #1000;                    // delay between transactions
+    end
+  endtask
+endclass
